@@ -59,6 +59,11 @@ has 'term_clear_eol' => (
     default => sub { $_[0]->terminfo->Tputs('ce') },
 );
 
+has 'interactive' => (
+    is => 'lazy',
+    default => sub { -t $_[0]->{fh} },
+);
+
 =head1 METHODS
 
 =head2 C<< Term::Output::List->new() >>
@@ -93,15 +98,27 @@ output the (remaining) list of ongoing jobs after that.
 =cut
 
 sub output_permanent( $self, @items ) {
-    $self->scroll_up();
+    my $total = $self->_last_lines // 0;
+    if( $self->interactive ) {
+        $self->scroll_up();
+    }
     my $clear_eol = $self->term_clear_eol;
     if( @items ) {
         print { $self->fh } join("$clear_eol\n", @items)."$clear_eol\n";
     };
-    $self->fresh_output();
+    #sleep 1;
+
+    if( $self->interactive ) {
+        my $blank = $total - @items;
+        if( $blank > 0 ) {
+            print { $self->fh } "$clear_eol\n"x ($blank);
+            $self->scroll_up( $blank );
+        }
+        $self->fresh_output();
+    }
 }
 
-=head2 C<<->output_permanent @items>>
+=head2 C<<->output_list @items>>
 
   $o->output_list("Frobnicating 9 items for job 1",
                   "Frobnicating 2 items for job 3",
@@ -114,9 +131,11 @@ not be overwritten later, see C<</->output_permanent>>
 =cut
 
 sub output_list( $self, @items ) {
-    $self->output_permanent(@items);
-    #sleep 1;
-    $self->_last_lines( 0+@items);
+    if( $self->interactive ) {
+        $self->output_permanent(@items);
+        #sleep 1;
+        $self->_last_lines( 0+@items);
+    }
 }
 
 =head2 C<<->fresh_output >>
