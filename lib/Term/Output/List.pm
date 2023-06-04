@@ -65,7 +65,7 @@ has 'term_clear_eol' => (
 
 has 'interactive' => (
     is => 'lazy',
-    default => sub { -t $_[0]->{fh} },
+    default => sub { -t $_[0]->fh },
 );
 
 =head1 METHODS
