@@ -65,6 +65,19 @@ has 'interactive' => (
     default => sub { -t $_[0]->fh },
 );
 
+=head2 C<< width >>
+
+Width of the terminal. This is initialized at first use. You may (or may not)
+want to set up a C<< $SIG{WINCH} >> handler to set the terminal width when
+the terminal size changes.
+
+=cut
+
+has 'width' => (
+    is => 'lazy',
+    default => sub { `tput cols` },
+);
+
 =head1 METHODS
 
 =head2 C<< Term::Output::List->new() >>
@@ -102,15 +115,22 @@ sub output_permanent( $self, @items ) {
     my $total = $self->_last_lines // 0;
     if( $self->interactive ) {
         $self->scroll_up();
+        my $w = $self->width;
+        my $clear_eol = $self->term_clear_eol;
+        if( @items ) {
+            print { $self->fh }
+                  join("$clear_eol\n",
+                    map { length($_) > $w - 1 ? (substr($_,0,$w-3).'..'): $_
+                        } @items)."$clear_eol\n";
+        };
+    } else {
+        print { $self->fh } join("\n", @items) . "\n";
     }
-    my $clear_eol = $self->term_clear_eol;
-    if( @items ) {
-        print { $self->fh } join("$clear_eol\n", @items)."$clear_eol\n";
-    };
     #sleep 1;
 
     if( $self->interactive ) {
         my $blank = $total - @items;
+        my $clear_eol = $self->term_clear_eol;
         if( $blank > 0 ) {
             print { $self->fh } "$clear_eol\n"x ($blank);
             $self->scroll_up( $blank );
@@ -125,9 +145,9 @@ sub output_permanent( $self, @items ) {
                   "Frobnicating 2 items for job 3",
   );
 
-Outputs items that can be updated later, as long as no intervening C<print>
-or C<warn> output has happened. If you want to output lines that should
-not be overwritten later, see C<</->output_permanent>>
+Outputs items that can be updated later, as long as no intervening output
+(like from C<print>, C<say> or C<warn>) has happened. If you want to output
+lines that should not be overwritten later, see C<</->output_permanent>>
 
 =cut
 
