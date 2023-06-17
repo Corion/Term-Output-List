@@ -11,8 +11,6 @@ our $VERSION = '0.01';
 # We should have Win32 console support (maybe just Win32::Console::ANSI ?)
 # -> Win32::Console->Mode & ENABLE_VIRTUAL_TERMINAL_PROCESSING != 0 -> VT sequences
 # -> otherwise scroll_up via Win32::Console->Cursor()
-# We should provide a graceful fallback for systems without scroll-up facilities
-#    like a pipe
 # The API doesn't look great - do we want multiple instances at all? We can't
 #   handle them anyway, in a sensible way
 
