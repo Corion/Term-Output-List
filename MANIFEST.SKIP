@@ -22,7 +22,7 @@ Makefile$
 ^.releaserc
 ^.*.cmd
 ^chrome-versions
-^WWW-Mechanize-Chrome
+^Term-Output-List
 ^frame-\d+.png
 ^demo/
 ^\.carmel/
