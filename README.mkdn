@@ -1,5 +1,4 @@
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/Corion/Term-Output-List?branch=master&svg=true)](https://ci.appveyor.com/project/Corion/Term-Output-List)
 [![Windows](https://github.com/Corion/Term-Output-List/workflows/windows/badge.svg)](https://github.com/Corion/Term-Output-List/actions?query=workflow%3Awindows)
 [![MacOS](https://github.com/Corion/Term-Output-List/workflows/macos/badge.svg)](https://github.com/Corion/Term-Output-List/actions?query=workflow%3Amacos)
 [![Linux](https://github.com/Corion/Term-Output-List/workflows/linux/badge.svg)](https://github.com/Corion/Term-Output-List/actions?query=workflow%3Alinux)
@@ -14,11 +13,19 @@ Term::Output::List - output an updateable list of ongoing jobs
     my @ongoing_tasks = ...;
     $printer->output_list(@ongoing_tasks);
 
+    $printer->output_permanent("Frobnicated gizmos"); # appears above the list
+
 # MEMBERS
 
 ## `fh`
 
 Filehandle used for output. Default is `STDOUT`.
+
+## `width`
+
+Width of the terminal. This is initialized at first use. You may (or may not)
+want to set up a `$SIG{WINCH}` handler to set the terminal width when
+the terminal size changes.
 
 # METHODS
 
@@ -38,15 +45,15 @@ Helper method to place the cursor at the top of the updateable list.
 Outputs items that should go on the permanent record. It is expected to
 output the (remaining) list of ongoing jobs after that.
 
-## `<-`output\_permanent @items>>
+## `<-`output\_list @items>>
 
     $o->output_list("Frobnicating 9 items for job 1",
                     "Frobnicating 2 items for job 3",
     );
 
-Outputs items that can be updated later, as long as no intervening `print`
-or `warn` output has happened. If you want to output lines that should
-not be overwritten later, see `</-`output\_permanent>>
+Outputs items that can be updated later, as long as no intervening output
+(like from `print`, `say` or `warn`) has happened. If you want to output
+lines that should not be overwritten later, see `</-`output\_permanent>>
 
 ## `<-`fresh\_output >>
 
