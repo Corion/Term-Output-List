@@ -1,2 +1,5 @@
+0.02 2023-07-23
+    * Use Perl 5.20 for signatures
+
 0.01 2023-07-21
     * Released on an unsuspecting world

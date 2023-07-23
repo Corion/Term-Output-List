@@ -6,7 +6,7 @@ use Term::Cap;
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 # We should have Win32 console support (maybe just Win32::Console::ANSI ?)
 # -> Win32::Console->Mode & ENABLE_VIRTUAL_TERMINAL_PROCESSING != 0 -> VT sequences

@@ -32,10 +32,9 @@
       },
       "runtime" : {
          "requires" : {
-            "Filter::signatures" : "0.17",
             "Moo" : "2",
             "Term::Cap" : "0",
-            "perl" : "5.010"
+            "perl" : "5.020"
          }
       },
       "test" : {
@@ -58,7 +57,7 @@
          "web" : "https://github.com/Corion/Term-Output-List"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_serialization_backend" : "JSON::PP version 4.11",
    "x_static_install" : 1
 }

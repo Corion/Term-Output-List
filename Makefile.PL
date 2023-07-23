@@ -40,7 +40,7 @@ my %module = (
         x_static_install => 1, # we are pure Perl and don't do anything fancy
     },
 
-    MIN_PERL_VERSION => '5.010', # I use // in some places
+    MIN_PERL_VERSION => '5.020', # I use signatures
 
     'LICENSE'=> 'perl',
 
@@ -52,7 +52,7 @@ my %module = (
     PREREQ_PM => {
         'Moo'                => 2, # for some hashes-as-objects
         'Term::Cap'          => 0,
-        'Filter::signatures' => 0.17,
+        #'Filter::signatures' => 0.17,
     },
     TEST_REQUIRES => {
         'Test::More'   => 0,
