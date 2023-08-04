@@ -179,7 +179,7 @@ sub do_clear_eol( $self, $count=$self->_last_lines ) {
 		my $c = $self->console;
 		my $w = $self->width;
 		my ($x,$y) = $c->Cursor;
-		$c->FillChar('~',$w*$count, 0, $y );
+		$c->FillChar(' ',$w*$count, 0, $y );
     };
 }
 
