@@ -87,7 +87,6 @@ sub scroll_up( $self, $count=$self->_last_lines ) {
         my $diff = $y-$count;
         $self->console->Title($count);
         my $line = $diff < 0 ? 0 : $diff;
-        print "Scrolling up $count to $line";
         $self->console->Cursor( 0, $line );
     };
 }
