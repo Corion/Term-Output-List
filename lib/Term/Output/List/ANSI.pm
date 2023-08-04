@@ -6,14 +6,6 @@ use Term::Cap;
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
-our $VERSION = '0.02';
-
-# We should have Win32 console support (maybe just Win32::Console::ANSI ?)
-# -> Win32::Console->Mode & ENABLE_VIRTUAL_TERMINAL_PROCESSING != 0 -> VT sequences
-# -> otherwise scroll_up via Win32::Console->Cursor()
-# The API doesn't look great - do we want multiple instances at all? We can't
-#   handle them anyway, in a sensible way
-
 =head1 NAME
 
 Term::Output::List::ANSI - output an updateable list of ongoing jobs to an ANSI terminal
