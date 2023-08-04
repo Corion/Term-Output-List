@@ -1,3 +1,4 @@
+
 # -*- mode: perl; c-basic-offset: 4; indent-tabs-mode: nil; -*-
 
 use strict;
@@ -16,6 +17,11 @@ my $module = 'Term::Output::List';
 my $distlink = $distbase;
 
 my @tests = map { glob $_ } 't/*.t', 't/*/*.t';
+
+my @TERM_MODULES;
+if( $^O eq 'MSWin32') {
+    push @TERM_MODULES, 'Win32::Console' => 0;
+}
 
 my %module = (
     NAME                => $module,
@@ -36,8 +42,8 @@ my %module = (
             },
             license    => "https://dev.perl.org/licenses/",
         },
-        dynamic_config   => 0, # we promise to keep META.* up-to-date
-        x_static_install => 1, # we are pure Perl and don't do anything fancy
+        dynamic_config   => 1, # We have dynamic prerequisites
+        x_static_install => 0, # We have dynamic prerequisites
     },
 
     MIN_PERL_VERSION => '5.020', # I use signatures
@@ -51,11 +57,13 @@ my %module = (
 
     PREREQ_PM => {
         'Moo'                => 2, # for some hashes-as-objects
+        'Module::Load'       => 0,
         'Term::Cap'          => 0,
-        #'Filter::signatures' => 0.17,
+        @TERM_MODULES,
     },
     TEST_REQUIRES => {
         'Test::More'   => 0,
+        'Test2::V0'    => 0,
     },
 
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
