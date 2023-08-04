@@ -19,7 +19,7 @@ Term::Output::List::Win32 - output an updateable list of ongoing jobs to a Win32
 =head1 SYNOPSIS
 
     my $printer = Term::Output::List->new();
-    my @ongoing_tasks = ...;
+    my @ongoing_tasks = ('file1: frobnicating', 'file2: bamboozling', 'file3: frobnicating');
     $printer->output_list(@ongoing_tasks);
 
     $printer->output_permanent("Frobnicated gizmos"); # appears above the list

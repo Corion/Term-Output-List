@@ -1,4 +1,4 @@
-package Term::Output::List;
+package Term::Output::List::ANSI 0.02;
 use strict;
 use warnings;
 use Moo 2;
@@ -16,7 +16,7 @@ our $VERSION = '0.02';
 
 =head1 NAME
 
-Term::Output::List - output an updateable list of ongoing jobs
+Term::Output::List::ANSI - output an updateable list of ongoing jobs to an ANSI terminal
 
 =head1 SYNOPSIS
 
@@ -99,7 +99,7 @@ sub scroll_up( $self, $count=$self->_last_lines ) {
     };
 }
 
-=head2 C<<->output_permanent>>
+=head2 C<< ->output_permanent >>
 
   $o->output_permanent("Frobnicated 3 items for job 2");
   $o->output_list("Frobnicating 9 items for job 1",
@@ -139,7 +139,7 @@ sub output_permanent( $self, @items ) {
     }
 }
 
-=head2 C<<->output_list @items>>
+=head2 C<< ->output_list @items >>
 
   $o->output_list("Frobnicating 9 items for job 1",
                   "Frobnicating 2 items for job 3",
@@ -159,7 +159,7 @@ sub output_list( $self, @items ) {
     }
 }
 
-=head2 C<<->fresh_output >>
+=head2 C<< ->fresh_output >>
 
   $o->fresh_output();
 
