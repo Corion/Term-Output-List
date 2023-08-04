@@ -68,8 +68,8 @@ the terminal size changes.
 =cut
 
 sub width($self) {
-	my ($w,$h) = $self->console->Size();
-	return $w
+    my ($w,$h) = $self->console->Size();
+    return $w
 };
 
 =head2 C<< ->scroll_up >>
@@ -82,8 +82,12 @@ sub scroll_up( $self, $count=$self->_last_lines ) {
     if( !$count) {
     } else {
         # Overwrite the number of lines we printed last time
-		my ($x,$y) = $self->console->Cursor;
-		my $line = $y-$count < 0 ? 0 : $y-$count;
+        my ($x,$y) = $self->console->Cursor;
+        $y //= 0;
+        my $diff = $y-$count;
+        $self->console->Title($count);
+        my $line = $diff < 0 ? 0 : $diff;
+        print "Scrolling up $count to $line";
         $self->console->Cursor( 0, $line );
     };
 }
@@ -103,11 +107,10 @@ output the (remaining) list of ongoing jobs after that.
 sub output_permanent( $self, @items ) {
     my $total = $self->_last_lines // 0;
     if( $self->interactive ) {
-        $self->scroll_up();
+        $self->scroll_up($total);
         my $w = $self->width;
-        #my $clear_eol = $self->term_clear_eol;
         if( @items ) {
-			$self->do_clear_eol(scalar @items);
+            $self->do_clear_eol(scalar @items);
             print { $self->fh }
                   join("\n",
                     map { length($_) > $w - 1 ? (substr($_,0,$w-3).'..'): $_
@@ -121,8 +124,7 @@ sub output_permanent( $self, @items ) {
     if( $self->interactive ) {
         my $blank = $total - @items;
         if( $blank > 0 ) {
-			$self->do_clear_eol($blank);
-            $self->scroll_up( $blank );
+            $self->do_clear_eol($blank);
         }
         $self->fresh_output();
     }
@@ -176,10 +178,10 @@ sub do_clear_eol( $self, $count=$self->_last_lines ) {
     if( !$count) {
     } else {
         # Overwrite the number of lines we printed last time
-		my $c = $self->console;
-		my $w = $self->width;
-		my ($x,$y) = $c->Cursor;
-		$c->FillChar(' ',$w*$count, 0, $y );
+        my $c = $self->console;
+        my $w = $self->width;
+        my ($x,$y) = $c->Cursor;
+        $c->FillChar(' ',$w*$count, 0, $y );
     };
 }
 
