@@ -17,6 +17,8 @@ require './Makefile.PL';
 # Loaded from Makefile.PL
 our %module = get_module_info();
 
+my $is_win = $^O eq 'MSWin32';
+
 my $last_version = undef;
 
 sub check {
@@ -28,6 +30,11 @@ sub check {
 
     s!\s*\z!!
         for ($stdout, $stderr);
+
+    # Pass compile test for Windows-specific modules on non-Windows OSes
+    local $TODO = "$_ is for Windows"
+        if( ! $is_win and /\bWin32\b/ );
+
 
     if( $exit ) {
         diag $stderr;
