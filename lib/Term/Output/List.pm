@@ -1,9 +1,11 @@
-package Term::Output::List 0.02;
+package Term::Output::List;
 use 5.020;
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
 use Module::Load 'load';
+
+our $VERSION = '0.03';
 
 =head1 NAME
 

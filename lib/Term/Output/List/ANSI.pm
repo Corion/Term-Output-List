@@ -1,10 +1,12 @@
-package Term::Output::List::ANSI 0.02;
+package Term::Output::List::ANSI;
 use strict;
 use warnings;
 use Moo 2;
 use Term::Cap;
 use feature 'signatures';
 no warnings 'experimental::signatures';
+
+our $VERSION = '0.03';
 
 =head1 NAME
 

@@ -1,4 +1,4 @@
-package Term::Output::List::Win32 0.02;
+package Term::Output::List::Win32;
 use strict;
 use warnings;
 use Moo 2;
@@ -6,16 +6,12 @@ use Win32::Console;
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
-# We should have Win32 console support (maybe just Win32::Console::ANSI ?)
-# -> Win32::Console->Mode & ENABLE_VIRTUAL_TERMINAL_PROCESSING != 0 -> VT sequences
-# -> otherwise scroll_up via Win32::Console->Cursor()
-# The API doesn't look great - do we want multiple instances at all? We can't
-#   handle them anyway, in a sensible way
+our $VERSION = '0.03';
 
 =head1 NAME
 
-
 Term::Output::List::Win32 - output an updateable list of ongoing jobs to a Win32 console
+
 =head1 SYNOPSIS
 
     my $printer = Term::Output::List->new();
