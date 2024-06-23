@@ -8,6 +8,7 @@ use feature 'signatures';
 no warnings 'experimental::signatures';
 
 our $VERSION = '0.03';
+with 'Term::Output::List::Role';
 
 =head1 NAME
 
@@ -47,31 +48,17 @@ has 'console' => (
     default => sub($s) { Win32::Console->new(STD_OUTPUT_HANDLE) },
 );
 
-has 'interactive' => (
-    is => 'lazy',
-    default => sub { -t $_[0]->fh },
-);
+=head2 C<< interactive >>
 
-has 'hook_warnings' => (
-    is => 'ro',
-    default => undef,
-);
+Whether the script is run interactively and should output intermittent
+updateable information
 
-sub BUILD( $self, $args ) {
-    if( $args->{hook_warnings} ) {
-        if( ! $SIG{__WARN__}) {
-            weaken( my $s = $self );
-            $SIG{__WARN__} = sub {
-                if( $self ) {
-                    my $msg = "@_";
-                    $self->output_permanent($msg );
-                } else {
-                    print STDERR "@_";
-                }
-            };
-        }
-    }
-}
+=head2 C<< hook_warnings >>
+
+Install a hook for sending warnings to C<< ->output_permanent >>. This
+prevents ugly tearing/overwriting when your code outputs warnings.
+
+=cut
 
 =head1 METHODS
 
@@ -136,15 +123,6 @@ output the (remaining) list of ongoing jobs after that.
 
 =cut
 
-sub _trim( $self, $item, $width=$self->width ) {
-    if( length($item) > $width - 1 ) {
-        #return substr($item,0,$width-3).'..'
-        return substr($item,0,$width-3)."\N{HORIZONTAL ELLIPSIS}"
-    } else {
-        return $item
-    }
-}
-
 sub output_permanent( $self, @items ) {
     my $total = $self->_last_lines // 0;
     if( !$self->interactive ) {
@@ -154,14 +132,11 @@ sub output_permanent( $self, @items ) {
         $self->scroll_up($total);
         my $w = $self->width;
 
-        @items = map { s/\r?\n$//r }
-                 map { split /\r?\n/ }
-                 @items
-                 ;
         if( @items ) {
             $self->do_clear_eol(scalar @items);
             print { $self->fh }
                   join("\n",
+                    map { s/\s*\z//r }
                     map { $self->_trim( $_, $w ) }
                         } @items)."\n";
         };
@@ -184,16 +159,6 @@ Outputs items that can be updated later, as long as no intervening output
 (like from C<print>, C<say> or C<warn>) has happened. If you want to output
 lines that should not be overwritten later, see C<</->output_permanent>>
 
-=cut
-
-sub output_list( $self, @items ) {
-    if( $self->interactive ) {
-        $self->output_permanent(@items);
-        #sleep 1;
-        $self->_last_lines( 0+@items);
-    }
-}
-
 =head2 C<<->fresh_output >>
 
   $o->fresh_output();
@@ -203,12 +168,6 @@ Helper subroutine to make all items from the last output list remain as is.
 For compatibility between output to a terminal and output without a terminal,
 you should use C<< ->output_permanent >> for things that should be permanent
 instead.
-
-=cut
-
-sub fresh_output( $self ) {
-    $self->_last_lines( 0 );
-}
 
 =head2 C<< ->do_clear_eol >>
 

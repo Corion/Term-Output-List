@@ -25,10 +25,6 @@ Term::Output::List::ANSI - output an updateable list of ongoing jobs to an ANSI 
 
 =cut
 
-has '_last_lines' => (
-    is => 'rw',
-);
-
 =head1 MEMBERS
 
 =head2 C<< fh >>
@@ -36,11 +32,6 @@ has '_last_lines' => (
 Filehandle used for output. Default is C<< STDOUT >>.
 
 =cut
-
-has 'fh' => (
-    is => 'lazy',
-    default => sub { \*STDOUT },
-);
 
 has 'terminfo' => (
     is => 'lazy',
@@ -57,31 +48,17 @@ has 'term_clear_eol' => (
     default => sub { $_[0]->terminfo->Tputs('ce') },
 );
 
-has 'interactive' => (
-    is => 'lazy',
-    default => sub { -t $_[0]->fh },
-);
+=head2 C<< interactive >>
 
-has 'hook_warnings' => (
-    is => 'ro',
-    default => undef,
-);
+Whether the script is run interactively and should output intermittent
+updateable information
 
-sub BUILD( $self, $args ) {
-    if( $args->{hook_warnings} ) {
-        if( ! $SIG{__WARN__}) {
-            weaken( my $s = $self );
-            $SIG{__WARN__} = sub {
-                if( $self ) {
-                    my $msg = "@_";
-                    $self->output_permanent($msg );
-                } else {
-                    print STDERR "@_";
-                }
-            };
-        }
-    }
-}
+=head2 C<< hook_warnings >>
+
+Install a hook for sending warnings to C<< ->output_permanent >>. This
+prevents ugly tearing/overwriting when your code outputs warnings.
+
+=cut
 
 =head1 METHODS
 
@@ -127,6 +104,8 @@ Helper method to place the cursor at the top of the updateable list.
 
 =cut
 
+with 'Term::Output::List::Role';
+
 sub scroll_up( $self, $count=$self->_last_lines ) {
     if( !$count) {
     } else {
@@ -148,15 +127,6 @@ output the (remaining) list of ongoing jobs after that.
 
 =cut
 
-sub _trim( $self, $item, $width=$self->width ) {
-    if( length($item) > $width - 1 ) {
-        #return substr($item,0,$width-3).'..'
-        return substr($item,0,$width-3)."\N{HORIZONTAL ELLIPSIS}"
-    } else {
-        return $item
-    }
-}
-
 sub output_permanent( $self, @items ) {
     my $total = $self->_last_lines // 0;
     if( !$self->interactive ) {
@@ -166,15 +136,13 @@ sub output_permanent( $self, @items ) {
         $self->scroll_up($total);
         my $w = $self->width;
         my $clear_eol = $self->term_clear_eol;
-        @items = map { s/\r?\n$//r }
-                 map { split /\r?\n/ }
-                 @items
-                 ;
+
         if( @items ) {
 
             print { $self->fh }
                   join("$clear_eol\n",
                     map { $self->_trim( $_, $w ) }
+                    map { s/\s*\z//r }
                     @items
                   )."$clear_eol\n";
         };
@@ -199,16 +167,6 @@ Outputs items that can be updated later, as long as no intervening output
 (like from C<print>, C<say> or C<warn>) has happened. If you want to output
 lines that should not be overwritten later, see C<</->output_permanent>>
 
-=cut
-
-sub output_list( $self, @items ) {
-    if( $self->interactive ) {
-        $self->output_permanent(@items);
-        #sleep 1;
-        $self->_last_lines( 0+@items);
-    }
-}
-
 =head2 C<< ->fresh_output >>
 
   $o->fresh_output();
@@ -220,9 +178,5 @@ you should use C<< ->output_permanent >> for things that should be permanent
 instead.
 
 =cut
-
-sub fresh_output( $self ) {
-    $self->_last_lines( 0 );
-}
 
 1;
