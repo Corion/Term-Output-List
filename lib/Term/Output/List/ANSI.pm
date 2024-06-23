@@ -123,10 +123,16 @@ sub output_permanent( $self, @items ) {
         $self->scroll_up();
         my $w = $self->width;
         my $clear_eol = $self->term_clear_eol;
+        @items = map { s/\r?\n$//r }
+                 map { split /\r?\n/ }
+                 @items
+                 ;
         if( @items ) {
             print { $self->fh }
                   join("$clear_eol\n",
                     map { $self->_trim( $_, $w ) }
+                    @items
+                  )."$clear_eol\n";
         };
 
         # If we have fewer items than before, clear the lines of the vanished items
