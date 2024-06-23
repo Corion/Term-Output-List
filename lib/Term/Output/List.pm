@@ -24,7 +24,7 @@ Term::Output::List - output an updateable list of ongoing jobs
 sub detect_terminal_type($os = $^O) {
 	if( $os eq 'MSWin32' ) {
 		require Win32::Console;
-		if( Win32::Console->Mode & 0x0004 ) { #ENABLE_VIRTUAL_TERMINAL_PROCESSING 
+		if( Win32::Console->Mode & 0x0004 ) { #ENABLE_VIRTUAL_TERMINAL_PROCESSING
 			return 'ansi';
 		} else {
 			return 'win32'
@@ -36,7 +36,7 @@ sub detect_terminal_type($os = $^O) {
 
 sub new($class,%args) {
 	my $ttype = detect_terminal_type();
-	
+
 	my $impl = 'Term::Output::List::ANSI';
 	if( $ttype eq 'win32' ) {
 	    $impl = 'Term::Output::List::Win32';
@@ -49,7 +49,23 @@ sub new($class,%args) {
 
 =head2 C<< Term::Output::List->new() >>
 
-=cut
+=over 4
+
+=item C<< fh >>
+
+Filehandle used for output. Default is C<< STDOUT >>.
+
+=item C<< interactive >>
+
+Whether the script is run interactively and should output intermittent
+updateable information
+
+=item C<< hook_warnings >>
+
+Install a hook for sending warnings to C<< ->output_permanent >>. This
+prevents ugly tearing/overwriting when your code outputs warnings.
+
+=back
 
 =head2 C<< ->scroll_up >>
 
@@ -61,6 +77,7 @@ Helper method to place the cursor at the top of the updateable list.
   $o->output_list("Frobnicating 9 items for job 1",
                   "Frobnicating 2 items for job 3",
   );
+  $o->output_permanent("Frobnicated 3 items for job 2");
 
 Outputs items that should go on the permanent record. It is expected to
 output the (remaining) list of ongoing jobs after that.
@@ -86,6 +103,5 @@ you should use C<< ->output_permanent >> for things that should be permanent
 instead.
 
 =cut
-
 
 1;

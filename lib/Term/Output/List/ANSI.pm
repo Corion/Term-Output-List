@@ -62,9 +62,9 @@ prevents ugly tearing/overwriting when your code outputs warnings.
 
 =head1 METHODS
 
-=head2 C<< Term::Output::List::Win32->new() >>
+=head2 C<< Term::Output::List::ANSI->new() >>
 
-  my $output = Term::Output::List::Win32->new(
+  my $output = Term::Output::List::ANSI->new(
       hook_warnings => 1,
   )
 
