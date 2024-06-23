@@ -5,7 +5,7 @@ use Term::Cap;
 use Scalar::Util 'weaken';
 use experimental 'signatures';
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 NAME
 
