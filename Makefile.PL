@@ -59,6 +59,7 @@ my %module = (
         'experimental'       => '0.031',
         'Moo'                => 2, # for some hashes-as-objects
         'Module::Load'       => 0,
+        'Scalar::Util'       => 0, # for weaken()
         'Term::Cap'          => 0,
         @TERM_MODULES,
     },
