@@ -105,6 +105,15 @@ output the (remaining) list of ongoing jobs after that.
 
 =cut
 
+sub _trim( $self, $item, $width=$self->width ) {
+    if( length($item) > $width - 1 ) {
+        #return substr($item,0,$width-3).'..'
+        return substr($item,0,$width-3)."\N{HORIZONTAL ELLIPSIS}"
+    } else {
+        return $item
+    }
+}
+
 sub output_permanent( $self, @items ) {
     my $total = $self->_last_lines // 0;
     if( $self->interactive ) {
@@ -114,8 +123,7 @@ sub output_permanent( $self, @items ) {
         if( @items ) {
             print { $self->fh }
                   join("$clear_eol\n",
-                    map { length($_) > $w - 1 ? (substr($_,0,$w-3).'..'): $_
-                        } @items)."$clear_eol\n";
+                    map { $self->_trim( $_, $w ) }
         };
     } else {
         print { $self->fh } join("\n", @items) . "\n";
