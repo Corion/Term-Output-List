@@ -116,7 +116,10 @@ sub _trim( $self, $item, $width=$self->width ) {
 
 sub output_permanent( $self, @items ) {
     my $total = $self->_last_lines // 0;
-    if( $self->interactive ) {
+    if( !$self->interactive ) {
+        print { $self->fh } join("\n", @items) . "\n";
+
+    } else {
         $self->scroll_up();
         my $w = $self->width;
         my $clear_eol = $self->term_clear_eol;
@@ -125,14 +128,9 @@ sub output_permanent( $self, @items ) {
                   join("$clear_eol\n",
                     map { $self->_trim( $_, $w ) }
         };
-    } else {
-        print { $self->fh } join("\n", @items) . "\n";
-    }
-    #sleep 1;
 
-    if( $self->interactive ) {
+        # If we have fewer items than before, clear the lines of the vanished items
         my $blank = $total - @items;
-        my $clear_eol = $self->term_clear_eol;
         if( $blank > 0 ) {
             print { $self->fh } "$clear_eol\n"x ($blank);
             $self->scroll_up( $blank );
