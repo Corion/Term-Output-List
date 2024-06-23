@@ -4,7 +4,7 @@ use experimental 'signatures';
 
 use Module::Load 'load';
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 NAME
 
@@ -12,7 +12,10 @@ Term::Output::List - output an updateable list of ongoing jobs
 
 =head1 SYNOPSIS
 
-    my $printer = Term::Output::List->new();
+    my $printer = Term::Output::List->new(
+        hook_warnings => 1,
+	ellipsis => "\N{HORIZONTAL ELLIPSIS}",
+    );
     my @ongoing_tasks = ('file1: frobnicating', 'file2: bamboozling', 'file3: frobnicating');
     $printer->output_list(@ongoing_tasks);
 

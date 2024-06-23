@@ -41,6 +41,11 @@ has 'fh' => (
     default => sub { \*STDOUT },
 );
 
+has 'ellipsis' => (
+    is => 'lazy',
+    default => sub { "..." },
+);
+
 has 'console' => (
     is => 'lazy',
     default => sub($s) { Win32::Console->new(STD_OUTPUT_HANDLE) },

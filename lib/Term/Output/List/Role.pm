@@ -80,12 +80,12 @@ sub BUILD( $self, $args ) {
     }
 }
 
-requires qw( width output_permanent );
+requires qw( width output_permanent ellipsis );
 
 sub _trim( $self, $item, $width=$self->width ) {
+    state $ell = $self->ellipsis;
     if( length($item) > $width - 1 ) {
-        #return substr($item,0,$width-3).'..'
-        return substr($item,0,$width-3)."\N{HORIZONTAL ELLIPSIS}"
+        return substr($item,0,$width-length($ell)-1).$ell
     } else {
         return $item
     }

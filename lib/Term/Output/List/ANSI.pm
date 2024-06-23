@@ -102,6 +102,11 @@ Helper method to place the cursor at the top of the updateable list.
 
 =cut
 
+has 'ellipsis' => (
+    is => 'lazy',
+    default => sub { "\N{HORIZONTAL ELLIPSIS}" },
+);
+
 with 'Term::Output::List::Role';
 
 sub scroll_up( $self, $count=$self->_last_lines ) {
