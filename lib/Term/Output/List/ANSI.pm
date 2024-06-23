@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Moo 2;
 use Term::Cap;
+use Scalar::Util 'weaken';
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
@@ -14,7 +15,9 @@ Term::Output::List::ANSI - output an updateable list of ongoing jobs to an ANSI 
 
 =head1 SYNOPSIS
 
-    my $printer = Term::Output::List->new();
+    my $printer = Term::Output::List->new(
+        hook_warnings => 1,
+    );
     my @ongoing_tasks = ('file1: frobnicating', 'file2: bamboozling', 'file3: frobnicating');
     $printer->output_list(@ongoing_tasks);
 
@@ -58,6 +61,46 @@ has 'interactive' => (
     is => 'lazy',
     default => sub { -t $_[0]->fh },
 );
+
+has 'hook_warnings' => (
+    is => 'ro',
+    default => undef,
+);
+
+sub BUILD( $self, $args ) {
+    if( $args->{hook_warnings} ) {
+        if( ! $SIG{__WARN__}) {
+            weaken( my $s = $self );
+            $SIG{__WARN__} = sub {
+                if( $self ) {
+                    my $msg = "@_";
+                    $self->output_permanent($msg );
+                } else {
+                    print STDERR "@_";
+                }
+            };
+        }
+    }
+}
+
+=head1 METHODS
+
+=head2 C<< Term::Output::List::Win32->new() >>
+
+  my $output = Term::Output::List::Win32->new(
+      hook_warnings => 1,
+  )
+
+=over 4
+
+=item C<< hook_warnings >>
+
+Install a hook for sending warnings to C<< ->output_permanent >>. This
+prevents ugly tearing/overwriting when your code outputs warnings.
+
+=back
+
+=cut
 
 =head2 C<< width >>
 
