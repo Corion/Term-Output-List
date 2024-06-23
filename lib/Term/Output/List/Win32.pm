@@ -99,24 +99,36 @@ output the (remaining) list of ongoing jobs after that.
 
 =cut
 
+sub _trim( $self, $item, $width=$self->width ) {
+    if( length($item) > $width - 1 ) {
+        #return substr($item,0,$width-3).'..'
+        return substr($item,0,$width-3)."\N{HORIZONTAL ELLIPSIS}"
+    } else {
+        return $item
+    }
+}
+
 sub output_permanent( $self, @items ) {
     my $total = $self->_last_lines // 0;
-    if( $self->interactive ) {
+    if( !$self->interactive ) {
+        print { $self->fh } join("\n", @items) . "\n";
+
+    } else {
         $self->scroll_up($total);
         my $w = $self->width;
+
+        @items = map { s/\r?\n$//r }
+                 map { split /\r?\n/ }
+                 @items
+                 ;
         if( @items ) {
             $self->do_clear_eol(scalar @items);
             print { $self->fh }
                   join("\n",
-                    map { length($_) > $w - 1 ? (substr($_,0,$w-3).'..'): $_
+                    map { $self->_trim( $_, $w ) }
                         } @items)."\n";
         };
-    } else {
-        print { $self->fh } join("\n", @items) . "\n";
-    }
-    #sleep 1;
 
-    if( $self->interactive ) {
         my $blank = $total - @items;
         if( $blank > 0 ) {
             $self->do_clear_eol($blank);

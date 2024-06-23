@@ -120,7 +120,7 @@ sub output_permanent( $self, @items ) {
         print { $self->fh } join("\n", @items) . "\n";
 
     } else {
-        $self->scroll_up();
+        $self->scroll_up($total);
         my $w = $self->width;
         my $clear_eol = $self->term_clear_eol;
         @items = map { s/\r?\n$//r }
@@ -128,6 +128,7 @@ sub output_permanent( $self, @items ) {
                  @items
                  ;
         if( @items ) {
+
             print { $self->fh }
                   join("$clear_eol\n",
                     map { $self->_trim( $_, $w ) }
