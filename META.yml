@@ -23,6 +23,7 @@ requires:
   Module::Load: '0'
   Moo: '2'
   Term::Cap: '0'
+  experimental: '0.031'
   perl: '5.020'
 resources:
   bugtracker: https://github.com/Corion/Term-Output-List/issues

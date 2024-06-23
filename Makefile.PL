@@ -56,6 +56,7 @@ my %module = (
     },
 
     PREREQ_PM => {
+        'experimental'       => '0.031',
         'Moo'                => 2, # for some hashes-as-objects
         'Module::Load'       => 0,
         'Term::Cap'          => 0,

@@ -1,7 +1,6 @@
 package Term::Output::List;
 use 5.020;
-use feature 'signatures';
-no warnings 'experimental::signatures';
+use experimental 'signatures';
 
 use Module::Load 'load';
 

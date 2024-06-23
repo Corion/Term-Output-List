@@ -1,11 +1,9 @@
 package Term::Output::List::Win32;
-use strict;
-use warnings;
+use 5.020;
 use Moo 2;
 use Scalar::Util 'weaken';
 use Win32::Console;
-use feature 'signatures';
-no warnings 'experimental::signatures';
+use experimental 'signatures';
 
 our $VERSION = '0.03';
 with 'Term::Output::List::Role';

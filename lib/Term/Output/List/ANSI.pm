@@ -1,11 +1,9 @@
 package Term::Output::List::ANSI;
-use strict;
-use warnings;
+use 5.020;
 use Moo 2;
 use Term::Cap;
 use Scalar::Util 'weaken';
-use feature 'signatures';
-no warnings 'experimental::signatures';
+use experimental 'signatures';
 
 our $VERSION = '0.03';
 

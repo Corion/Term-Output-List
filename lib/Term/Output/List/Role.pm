@@ -1,6 +1,5 @@
 package Term::Output::List::Role;
-use strict;
-use warnings;
+use 5.020;
 use Moo::Role;
 use Term::Cap;
 use Scalar::Util 'weaken';
